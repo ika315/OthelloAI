@@ -271,11 +271,11 @@ public class OthelloLogic implements Game {
         for (int i = 0; i <size; i++){
             for (int j = 0; j < size; j++){
                 if (this.gameBoard[i][j] == EMPTY){
-                    boardToString.append(" . ");
+                    boardToString.append(".");
                 } else if (this.gameBoard[i][j] == X){
-                    boardToString.append(" X ");
+                    boardToString.append("X");
                 } else if (this.gameBoard[i][j] == O){
-                    boardToString.append(" O ");
+                    boardToString.append("O");
                 }
                 boardToString.append(" ");
             }
