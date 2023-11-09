@@ -225,6 +225,15 @@ public class OthelloLogic implements Game {
         return possibleMoves;
     }
 
+    public void printPossibleMoves(List<Move> possibleMoves) {
+        System.out.println("Possible Moves for Player " + (playerOneIsPlaying ? "1" : "2") + ":");
+
+        for (Move move : possibleMoves) {
+            System.out.println("Row: " + move.y + ", Column: " + move.x);
+        }
+    }
+
+
 
     /**
      * Check and return the status of the game, if there is a winner, a draw or still running.
