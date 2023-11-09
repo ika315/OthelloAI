@@ -1,4 +1,4 @@
-image: maven:3-openjdk-11
+image: kleinsamuel/oth-container:1.0
 
 workflow:
   name: "Workflow for the Othello assignment"
