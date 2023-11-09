@@ -16,6 +16,7 @@ install-dependencies:
   stage: build
   script:
     - mvn install -DskipTests
+  timeout: 10m
 
 # test the othello model class structure
 model-class-structure:
@@ -26,6 +27,7 @@ model-class-structure:
     script:
         - mvn test -Dtest="BasicTest"
     when: always
+    timeout: 5m
 
 # test the othello model correctness
 model-correctness:
@@ -36,6 +38,7 @@ model-correctness:
     script:
         - mvn test -Dtest="ModelTest"
     when: always
+    timeout: 5m
 
 # test the othello model by following a certain game sequence
 game-sequence:
@@ -46,6 +49,7 @@ game-sequence:
     script:
         - mvn test -Dtest="GameSequenceTest"
     when: always
+    timeout: 5m
 
 # test whether a single jar file exists within the ./jar/ directory
 jar-exists:
@@ -56,6 +60,7 @@ jar-exists:
     script:
         - /bin/bash ./src/test/test-jar-exists.sh
     when: always
+    timeout: 5m
 
 jar-has-sources:
     stage: check-jar
@@ -65,6 +70,7 @@ jar-has-sources:
     script:
         - /bin/bash ./src/test/test-jar-sources.sh
     when: always
+    timeout: 5m
 
 jar-is-executable:
     stage: check-jar
@@ -74,3 +80,4 @@ jar-is-executable:
     script:
         - /bin/bash ./src/test/test-jar-executable.sh
     when: always
+    timeout: 5m
