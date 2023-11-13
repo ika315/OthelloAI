@@ -7,7 +7,7 @@ import java.util.List;
 public class OthelloLogic implements Game {
 
     //variables for the board
-    int[][] gameBoard;
+    public int[][] gameBoard;
     public static final int size = 8;
     public static final int X = 1;
     public static final int O = 2;
@@ -22,7 +22,7 @@ public class OthelloLogic implements Game {
 
     //variables for logic
     int neighbour;
-    boolean playerOneIsPlaying = true;
+    public boolean playerOneIsPlaying = true;
 
     //constructor that initializes an othello game board
     public OthelloLogic() {
