@@ -12,12 +12,8 @@ public class RunnerOthello {
 
         OthelloLogic test = new OthelloLogic();
 
-
-        test.makeMove(true,5,4);
         //manuelle überprüfung
 
-
-/*
         test.printPossibleMoves(test.getPossibleMoves(true));
         test.makeMove(true,5,4);
 
@@ -39,7 +35,7 @@ public class RunnerOthello {
         test.printPossibleMoves(test.getPossibleMoves(true));
         test.makeMove(true,1,2);
 
- */
+
 
 
 

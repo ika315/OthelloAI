@@ -128,6 +128,7 @@ public class OthelloLogic implements Game {
         if (surrounding.isEmpty()){
             return false;
         }
+        System.out.println("Invalid move");
         return false;
     }
 
