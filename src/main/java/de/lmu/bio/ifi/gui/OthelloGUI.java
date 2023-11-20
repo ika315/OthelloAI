@@ -1,6 +1,7 @@
 package de.lmu.bio.ifi.gui;
 
 import de.lmu.bio.ifi.GameStatus;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +18,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import de.lmu.bio.ifi.OthelloLogic;
 import javafx.scene.control.Button;
+import javafx.util.Duration;
+import szte.mi.Move;
+
 
 public class OthelloGUI extends Application implements EventHandler<ActionEvent> {
     private OthelloLogic mygame;
@@ -26,14 +30,21 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
     private Label whosTurn;
 
+    private Move prevMove;
+
     Button[][] buttons = new Button[size][size];
     GridPane board;
+
+    RandomKI randomKI = new RandomKI();
+
+    boolean itsAIsturn;
 
 
     @Override
     public void start(Stage stage) throws Exception {
 
         mygame = new OthelloLogic();
+        randomKI.setGameState(mygame);
 
         stage.setTitle("Irem's Othello GUI");
         BorderPane root = new BorderPane();
@@ -81,7 +92,6 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
             }
         }
 
-
         board.setAlignment(Pos.CENTER);
         root.setCenter(board);
         BorderPane.setAlignment(board, Pos.CENTER);
@@ -90,17 +100,21 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
         stage.show();
     }
 
+
     @Override
     public void handle(ActionEvent actionEvent) {
         if (mygame.status == GameStatus.RUNNING) {
             if (actionEvent.getSource() instanceof OthelloButton) {
-                ((OthelloButton) actionEvent.getSource()).clicked(mygame.playerOneIsPlaying ? OthelloLogic.X : OthelloLogic.O);
+                OthelloButton clickedButton = (OthelloButton) actionEvent.getSource();
+                clickedButton.clicked(mygame.playerOneIsPlaying ? OthelloLogic.X : OthelloLogic.O);
+                // Store the last move
+                prevMove = new Move(clickedButton.c, clickedButton.r);
             }
         }
 
     }
 
-    class OthelloButton extends Button {
+    public class OthelloButton extends Button {
         private int r;
         private int c;
 
@@ -109,7 +123,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
             this.r = r;
             this.c = c;
             setPrefSize(buttonSize, buttonSize);
-            setStyle("-fx-background-color: #556B2F; " + "-fx-border-color: black; " + "-fx-border-width: 2;");
+            setStyle("-fx-background-color: #556B2F; " + "-fx-border-color: black; ");
         }
 
         public void clicked(int player) {
@@ -118,18 +132,28 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
                 if (mygame.makeMove(true, c, r) == true) {
                     paintFlippedButtons();
                     buttons[r][c].setGraphic(drawBlack());
+                    itsAIsturn = true;
+                    handleAImove();
+
                 }
-            } else if (player == OthelloLogic.O) {
+
                 //showPossibleMoves(player);
-                if (mygame.makeMove(false, c, r) == true) {
-                    paintFlippedButtons();
-                    buttons[r][c].setGraphic(drawWhite());
-                }
             }
             whosTurn.setText("It's " + (mygame.playerOneIsPlaying ? "Player One's" : "Player Two's") + " turn.");
 
             statusLabel.setText("Status: " + mygame.status);
             this.setOnAction(null);
+        }
+
+        public void handleAImove() {
+            if (itsAIsturn == true) {
+                Move move = randomKI.nextMove(prevMove, 0, 0);
+                if (move != null) {
+                    paintFlippedButtons();
+                    buttons[move.x][move.y].setGraphic(drawWhite());
+                    itsAIsturn = false;
+                }
+            }
         }
 
         private void paintFlippedButtons() {
@@ -144,26 +168,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
                 }
             }
         }
-        /*
-        private void showPossibleMoves(int player) {
-            List<Move> possibleMoves = new ArrayList<>();
 
-            possibleMoves = mygame.getPossibleMoves(mygame.playerOneIsPlaying ? true : false);
-
-            for (Move move : possibleMoves) {
-                if (player == OthelloLogic.X) {
-                    int row = move.x;
-                    int col = move.y;
-                    paintPossibleMoves(row, col);
-                }
-            }
-        }
-
-        private void paintPossibleMoves(int row, int col) {
-            buttons[row][col].setGraphic(drawTransparent());
-        }
-
-*/
         public Node drawBlack() {
             Circle c = new Circle(buttonSize / 3, Color.BLACK);
             c.setStroke(Color.WHITE);
@@ -181,17 +186,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
             c.setCenterX(buttonSize / 2);
             c.setCenterY(buttonSize / 2);
             setGraphic(c);
-            setStyle(getStyle() + " -fx-border-width: 2;" + "-fx-padding: 0;");
-
-            return c;
-        }
-
-        public Node drawTransparent() {
-            Circle c = new Circle(buttonSize / 3, Color.BEIGE);
-            c.setCenterX(buttonSize / 2);
-            c.setCenterY(buttonSize / 2);
-            setGraphic(c);
-            setStyle(getStyle() + " -fx-border-width: 2;" + "-fx-padding: 0;");
+            setStyle(getStyle() + "-fx-padding: 0;");
 
             return c;
         }

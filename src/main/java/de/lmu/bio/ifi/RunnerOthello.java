@@ -1,5 +1,6 @@
 package de.lmu.bio.ifi;
 import de.lmu.bio.ifi.OthelloLogic;
+import de.lmu.bio.ifi.gui.RandomKI;
 import szte.mi.Move;
 
 import java.util.ArrayList;
@@ -12,11 +13,23 @@ public class RunnerOthello {
 
         OthelloLogic test = new OthelloLogic();
 
+        RandomKI random = new RandomKI();
+
+        random.setGameState(test);
+
         //manuelle überprüfung
 
         test.printPossibleMoves(test.getPossibleMoves(true));
         test.makeMove(true,5,4);
 
+        test.printPossibleMoves(test.getPossibleMoves(false));
+
+        //Move move = random.nextMove(new Move(5,4), 0,0);
+
+
+
+
+        /*
         test.printPossibleMoves(test.getPossibleMoves(false));
         test.makeMove(false, 5, 3);
 
@@ -34,6 +47,8 @@ public class RunnerOthello {
 
         test.printPossibleMoves(test.getPossibleMoves(true));
         test.makeMove(true,1,2);
+
+         */
 
 
 

@@ -1,10 +1,24 @@
 package de.lmu.bio.ifi.gui;
 
+import de.lmu.bio.ifi.OthelloLogic;
 import szte.mi.Move;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+
+
+
+
+
 public class RandomKI implements szte.mi.Player {
+
+    private int order;
+    private Random random;
+    private OthelloLogic mygame;
+    private List<Move> possibleMoves;
+
     /**
      * Performs initialization depending on the parameters.
      *
@@ -18,7 +32,10 @@ public class RandomKI implements szte.mi.Player {
      */
     @Override
     public void init(int order, long t, Random rnd) {
+    }
 
+    public void setGameState(OthelloLogic game){
+        this.mygame = game;
     }
 
     /**
@@ -34,9 +51,19 @@ public class RandomKI implements szte.mi.Player {
      */
     @Override
     public Move nextMove(Move prevMove, long tOpponent, long t) {
-        Random random = new Random();
-        int x = random.nextInt(8); // Assuming the board size is 8x8
-        int y = random.nextInt(8);
-        return new Move(x, y);
+
+        random = new Random();
+        possibleMoves = mygame.getPossibleMoves(false);
+
+
+        if (possibleMoves.isEmpty()){
+            return null;
+        }
+
+        Move nextMove = possibleMoves.get(random.nextInt(possibleMoves.size()));
+        mygame.makeMove(false,nextMove.x,nextMove.y);
+
+        return nextMove;
+
     }
 }

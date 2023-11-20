@@ -128,7 +128,6 @@ public class OthelloLogic implements Game {
         if (surrounding.isEmpty()){
             return false;
         }
-        System.out.println("Invalid move");
         return false;
     }
 
@@ -176,6 +175,10 @@ public class OthelloLogic implements Game {
         for (Move m : flippable){
             this.gameBoard[m.y][m.x] = color;
         }
+    }
+
+    public int[][] getGameBoard(){
+        return gameBoard;
     }
 
 
