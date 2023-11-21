@@ -123,37 +123,35 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
         public void clicked(int player) {
             if (player == OthelloLogic.X) {
-                //showPossibleMoves(player);
                 if (mygame.makeMove(true, c, r) == true) {
                     paintFlippedButtons();
-                    //buttons[r][c].setGraphic(drawBlack());
                     itsAIsturn = true;
-                    handleAImove();
-                }
 
-                //showPossibleMoves(player);
+                    Duration delay = Duration.seconds(1);
+                    PauseTransition pause = new PauseTransition(delay);
+
+                    pause.setOnFinished(event1 -> {
+                        handleAImove();
+                    });
+
+                    pause.play();
+                }
             }
             whosTurn.setText("It's " + (mygame.playerOneIsPlaying ? "Player One's" : "Player Two's") + " turn.");
 
             statusLabel.setText("Status: " + mygame.status);
             this.setOnAction(null);
+
         }
 
         public void handleAImove() {
-           Duration delay = Duration.seconds(1);
-           PauseTransition pause = new PauseTransition(delay);
-
-            pause.setOnFinished(event1 -> {
-                if (itsAIsturn == true) {
-                    Move move = randomKI.nextMove(prevMove, 0, 0);
-                    if (move != null) {
-                        paintFlippedButtons();
-                        //buttons[move.x][move.y].setGraphic(drawWhite());
-                        itsAIsturn = false;
-                    }
+            if (itsAIsturn == true) {
+                Move move = randomKI.nextMove(prevMove, 0, 0);
+                if (move != null) {
+                    paintFlippedButtons();
+                    itsAIsturn = false;
                 }
-           });
-            pause.play();
+            }
         }
 
         private void paintFlippedButtons() {
