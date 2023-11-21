@@ -55,12 +55,11 @@ public class RandomKI implements szte.mi.Player {
         random = new Random();
         possibleMoves = mygame.getPossibleMoves(false);
 
-
         if (possibleMoves.isEmpty()){
             return null;
         }
-
         Move nextMove = possibleMoves.get(random.nextInt(possibleMoves.size()));
+
         mygame.makeMove(false,nextMove.x,nextMove.y);
 
         return nextMove;

@@ -27,16 +27,11 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
     private static final int size = 8;
     private static final int buttonSize = 60;
     private Label statusLabel;
-
     private Label whosTurn;
-
     private Move prevMove;
-
     Button[][] buttons = new Button[size][size];
     GridPane board;
-
     RandomKI randomKI = new RandomKI();
-
     boolean itsAIsturn;
 
 
@@ -131,10 +126,9 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
                 //showPossibleMoves(player);
                 if (mygame.makeMove(true, c, r) == true) {
                     paintFlippedButtons();
-                    buttons[r][c].setGraphic(drawBlack());
+                    //buttons[r][c].setGraphic(drawBlack());
                     itsAIsturn = true;
                     handleAImove();
-
                 }
 
                 //showPossibleMoves(player);
@@ -146,14 +140,20 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
         }
 
         public void handleAImove() {
-            if (itsAIsturn == true) {
-                Move move = randomKI.nextMove(prevMove, 0, 0);
-                if (move != null) {
-                    paintFlippedButtons();
-                    buttons[move.x][move.y].setGraphic(drawWhite());
-                    itsAIsturn = false;
+           Duration delay = Duration.seconds(1);
+           PauseTransition pause = new PauseTransition(delay);
+
+            pause.setOnFinished(event1 -> {
+                if (itsAIsturn == true) {
+                    Move move = randomKI.nextMove(prevMove, 0, 0);
+                    if (move != null) {
+                        paintFlippedButtons();
+                        //buttons[move.x][move.y].setGraphic(drawWhite());
+                        itsAIsturn = false;
+                    }
                 }
-            }
+           });
+            pause.play();
         }
 
         private void paintFlippedButtons() {
