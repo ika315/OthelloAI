@@ -22,15 +22,18 @@ public class RunnerOthello {
         test.printPossibleMoves(test.getPossibleMoves(true));
         test.makeMove(true,5,4);
 
+        System.out.println(test);
+
         test.printPossibleMoves(test.getPossibleMoves(false));
 
-        //Move move = random.nextMove(new Move(5,4), 0,0);
+        Move move = random.nextMove(null, 0,0);
 
 
+        test.makeMove(false, move.x, move.y);
 
 
         /*
-        test.printPossibleMoves(test.getPossibleMoves(false));
+
         test.makeMove(false, 5, 3);
 
         test.printPossibleMoves(test.getPossibleMoves(true));

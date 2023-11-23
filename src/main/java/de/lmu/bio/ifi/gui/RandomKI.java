@@ -63,6 +63,10 @@ public class RandomKI implements szte.mi.Player {
         mygame.makeMove(false,nextMove.x,nextMove.y);
 
         return nextMove;
-
     }
+
+
+
+
+
 }
