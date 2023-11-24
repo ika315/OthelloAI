@@ -1,10 +1,5 @@
 package de.lmu.bio.ifi;
-import de.lmu.bio.ifi.OthelloLogic;
-import de.lmu.bio.ifi.gui.RandomKI;
 import szte.mi.Move;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class RunnerOthello {

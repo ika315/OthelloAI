@@ -1,11 +1,9 @@
 package de.lmu.bio.ifi.gui;
 
 import de.lmu.bio.ifi.GameStatus;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
+import de.lmu.bio.ifi.RandomKI;
+import de.lmu.bio.ifi.AI;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -21,7 +19,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import de.lmu.bio.ifi.OthelloLogic;
 import javafx.scene.control.Button;
-import javafx.util.Duration;
 import szte.mi.Move;
 
 
@@ -35,15 +32,8 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
     OthelloButton[][] buttons = new OthelloButton[size][size];
     GridPane board;
     RandomKI randomKI = new RandomKI();
-    boolean itsAIsturn;
 
-    boolean AIHasmademove;
-
-    boolean playerOneHasMadeMove;
-
-    boolean AIhasMadeMove;
-
-    boolean boardHasBeenUpdated;
+    AI testingAI = new AI();
 
 
 
@@ -53,6 +43,8 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
         mygame = new OthelloLogic();
         randomKI.setGameState(mygame);
+
+        testingAI.setGameState(mygame);
 
 
 
@@ -142,7 +134,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
             if (player == OthelloLogic.X) {
                 if (mygame.makeMove(true, c, r) == true) {
                     System.out.println(mygame);
-                    randomKI.nextMove(prevMove, 0, 0);
+                    testingAI.nextMove(prevMove,0,0);
                     paintFlippedButtons();
                 }
             }

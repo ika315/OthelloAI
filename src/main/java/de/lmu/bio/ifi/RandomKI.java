@@ -1,4 +1,4 @@
-package de.lmu.bio.ifi.gui;
+package de.lmu.bio.ifi;
 
 import de.lmu.bio.ifi.OthelloLogic;
 import szte.mi.Move;
