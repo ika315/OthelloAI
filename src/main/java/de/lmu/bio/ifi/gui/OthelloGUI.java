@@ -133,9 +133,12 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
         }
 
         public void clicked(int player) {
+            System.out.println("Game before move:");
+            System.out.println(mygame);
 
             if (player == OthelloLogic.X) {
                 if (mygame.makeMove(true, c, r) == true) {
+                    System.out.println("Game after human move:");
                     System.out.println(mygame);
                     testingAI.nextMove(prevMove,0,0);
                     paintFlippedButtons();
@@ -153,7 +156,6 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
 
         private void paintFlippedButtons() {
-            System.out.println(mygame);
 
                 for (int i = 0; i < size; i++) {
                     for (int j = 0; j < size; j++) {
@@ -168,7 +170,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
                 }
             }
 
-
+            System.out.println("Game after human AND ai played -> updated board (should be consistent with GUI:");
             System.out.println(mygame);
 
         }

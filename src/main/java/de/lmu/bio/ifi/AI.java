@@ -4,6 +4,7 @@ import com.sun.nio.sctp.SctpSocketOption;
 import szte.mi.Move;
 import szte.mi.Player;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -59,20 +60,28 @@ public class AI implements Player {
     }
 
 
-    public Move findBestMove(OthelloLogic mygame, int depth){
+    public Move findBestMove(OthelloLogic mygame, int depth) {
         Move bestMove = null;
         int bestScore = Integer.MIN_VALUE;
+
         List<Move> possibleMoves = mygame.getPossibleMoves(false);
-        for (Move move : possibleMoves){
-            OthelloLogic copyOfGame = cloneBoard(mygame);
-            int score = miniMax(copyOfGame, depth-1, true);
-            if (score > bestScore){
+        OthelloLogic copyOfGame = cloneBoard(mygame);
+        HashMap<Move, Integer> scoredMoves = new HashMap<Move, Integer>();
+
+
+        for (Move move : possibleMoves) {
+            copyOfGame.makeMove(false, move.x, move.y);
+
+            int score = miniMax(copyOfGame, depth, true);
+            if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
             }
         }
+
         return bestMove;
     }
+
 
 
 
@@ -82,7 +91,8 @@ public class AI implements Player {
      */
     public int miniMax(OthelloLogic mygame, int depth, boolean isMaximize){
         if (depth == 0){
-            return evaluation(mygame);}
+            return evaluation(mygame);
+        }
         if (isMaximize) {
             OthelloLogic copyOfGame = cloneBoard(mygame);
             int maxVal = Integer.MIN_VALUE;
