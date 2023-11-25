@@ -21,6 +21,8 @@ import de.lmu.bio.ifi.OthelloLogic;
 import javafx.scene.control.Button;
 import szte.mi.Move;
 
+import java.util.Random;
+
 
 public class OthelloGUI extends Application implements EventHandler<ActionEvent> {
     private OthelloLogic mygame;
@@ -45,6 +47,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
         randomKI.setGameState(mygame);
 
         testingAI.setGameState(mygame);
+        testingAI.init(1,0,new Random());
 
 
 

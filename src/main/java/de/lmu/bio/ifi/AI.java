@@ -1,5 +1,6 @@
 package de.lmu.bio.ifi;
 
+import com.sun.nio.sctp.SctpSocketOption;
 import szte.mi.Move;
 import szte.mi.Player;
 
@@ -24,13 +25,12 @@ public class AI implements Player {
     int order;
 
     long t;
-
-    Move bestMove = null;
+    boolean playerOne;
 
     private OthelloLogic mygame;
     @Override
     public void init(int order, long t, Random rnd) {
-        this.order = order;
+        playerOne = (order == 0);
         this.t = t;
         this.rnd = rnd;
 
@@ -53,24 +53,45 @@ public class AI implements Player {
      */
     @Override
     public Move nextMove(Move prevMove, long tOpponent, long t) {
-        miniMax(mygame,4,true);
-        Move nextMove = bestMove;
+        Move nextMove = findBestMove(mygame,4);
         mygame.makeMove(false, nextMove.x,nextMove.y);
         return nextMove;
     }
 
 
+    public Move findBestMove(OthelloLogic mygame, int depth){
+        Move bestMove = null;
+        int bestScore = Integer.MIN_VALUE;
+        List<Move> possibleMoves = mygame.getPossibleMoves(false);
+        for (Move move : possibleMoves){
+            OthelloLogic copyOfGame = cloneBoard(mygame);
+            int score = miniMax(copyOfGame, depth-1, true);
+            if (score > bestScore){
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+        return bestMove;
+    }
 
 
+
+    /* if ai is maximizing, it means the ai is the current player.
+    if the ai is minimizing it means the human player is the current player
+
+     */
     public int miniMax(OthelloLogic mygame, int depth, boolean isMaximize){
         if (depth == 0){
             return evaluation(mygame);}
         if (isMaximize) {
+            OthelloLogic copyOfGame = cloneBoard(mygame);
             int maxVal = Integer.MIN_VALUE;
-            List<Move> moves = mygame.getPossibleMoves(true);
+            if (copyOfGame.playerOneIsPlaying = true){
+                copyOfGame.playerOneIsPlaying = false;
+            }
+            List<Move> moves = copyOfGame.getPossibleMoves(false);
             for (Move m : moves) {
-                OthelloLogic copyOfGame = cloneBoard(mygame);
-                copyOfGame.makeMove(true, m.x, m.y);
+                copyOfGame.makeMove(false, m.x, m.y);
                 int v = miniMax(copyOfGame, depth - 1, false);
                 maxVal = Math.max(maxVal, v);
 
@@ -78,10 +99,10 @@ public class AI implements Player {
             return maxVal;
         } else {
             int minVal = Integer.MAX_VALUE;
-            List<Move> moves = mygame.getPossibleMoves(false);
+            List<Move> moves = mygame.getPossibleMoves(true);
             for (Move m : moves) {
                 OthelloLogic copyOfGame = cloneBoard(mygame);
-                copyOfGame.makeMove(false, m.x, m.y);
+                copyOfGame.makeMove(true, m.x, m.y);
                 int v = miniMax(copyOfGame, depth - 1, true);
                 minVal = Math.min(minVal, v);
             }
