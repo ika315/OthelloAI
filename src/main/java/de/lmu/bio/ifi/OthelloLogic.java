@@ -64,6 +64,7 @@ public class OthelloLogic implements Game {
         int currentColour = playerOne ? 1 : 2;
         int otherColour = playerOne ? 2 : 1;
 
+
         //array where all the possible move directions are saved
         //-1 left/up +1 right/down
         Move[] directions = new Move[]{new Move(-1, -1), new Move(-1, 0), new Move(-1, 1), new Move(0, -1), new Move(0, 1), new Move(1, -1), new Move(1, 0), new Move(1, 1)};
@@ -198,6 +199,15 @@ public class OthelloLogic implements Game {
     @Override
     public List<Move> getPossibleMoves(boolean playerOne) {
 
+        int currentColour = playerOne ? 1 : 2;
+        int otherColour = playerOne ? 2 : 1;
+
+        if (currentColour == 1){
+            playerOneIsPlaying = true;
+        } else {
+            playerOneIsPlaying = false;
+        }
+
         List<Move> possibleMoves = new ArrayList<>();
 
         //if its not the current player accessing the possible moves
@@ -307,6 +317,7 @@ public class OthelloLogic implements Game {
 
 
     public void printPossibleMoves(List<Move> possibleMoves) {
+
         System.out.println("Possible Moves for Player " + (playerOneIsPlaying ? "1" : "2") + ":");
 
         for (Move move : possibleMoves) {
@@ -324,35 +335,30 @@ public class OthelloLogic implements Game {
      */
     @Override
     public GameStatus gameStatus() {
-        //if the number of the pieces are the same and the board is already full, we have a draw
-        if (numberMoves == size * size && counterX == counterO) {
-            return GameStatus.DRAW;
-        }
-        //if the players do have possible moves, the game is still running
-        if (getPossibleMoves(playerOneIsPlaying).isEmpty() == false){
-            return GameStatus.RUNNING;
-
-        //else count the pieces on the board to determine winner
-        } else {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    if (gameBoard[i][j] == X) {
-                            counterX++;
-                    }
-                    if (gameBoard[i][j] == O) {
-                            counterO++;
+        int blackPieces = 0;
+        int whitePieces = 0;
+            for (int i = 0; i < size; i++){
+                for (int j = 0; j < size; j++){
+                    if (gameBoard[i][j] == X){
+                        blackPieces++;
+                    } else if (gameBoard[i][j] == O){
+                        whitePieces++;
                     }
                 }
             }
-        }
-
-            if (counterX > counterO) {
+            if (blackPieces > whitePieces){
                 return GameStatus.PLAYER_1_WON;
-            } else if (counterO > counterX) {
+            } else if (whitePieces > blackPieces){
                 return GameStatus.PLAYER_2_WON;
             }
 
-        return status;
+            if (numberMoves == size*size){
+                if (blackPieces == whitePieces){
+                    return GameStatus.DRAW;
+                }
+            }
+
+            return GameStatus.RUNNING;
     }
 
 

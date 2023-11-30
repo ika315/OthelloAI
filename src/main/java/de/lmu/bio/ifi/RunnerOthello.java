@@ -11,18 +11,40 @@ public class RunnerOthello {
 
         //manuelle überprüfung
 
-        test.printPossibleMoves(test.getPossibleMoves(true));
+        System.out.println(test.gameStatus());
         test.makeMove(true,5,4);
-
         System.out.println(test);
+
+
+        test.makeMove(false, 5,3);
+        System.out.println(test);
+        System.out.println(test.gameStatus());
+
+        test.makeMove(true,4,2);
+        System.out.println(test);
+        System.out.println(test.gameStatus());
+
+        test.makeMove(false,5,5);
+        System.out.println(test);
+        System.out.println(test.gameStatus());
+
+        test.makeMove(true,2,4);
+        System.out.println(test);
+        System.out.println(test.gameStatus());
+
+        test.makeMove(false,2,3);
+        System.out.println(test);
+        System.out.println(test.gameStatus());
+
+        test.makeMove(true,1,2);
+        System.out.println(test);
+        System.out.println(test.gameStatus());
+
+        /*
 
         test.printPossibleMoves(test.getPossibleMoves(false));
 
         test.makeMove(false, 5,3);
-
-
-
-        /*
 
         test.makeMove(false, 5, 3);
 
@@ -43,15 +65,6 @@ public class RunnerOthello {
 
          */
 
-
-
-
-
-
-
-
-        System.out.println(test);
-        System.out.println(test.gameStatus());
     }
 
 

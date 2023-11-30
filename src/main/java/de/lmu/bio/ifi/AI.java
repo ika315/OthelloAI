@@ -62,8 +62,12 @@ public class AI implements Player {
         }
 
         Move nextMove = findBestMove(mygame);
-        mygame.makeMove(false, nextMove.x,nextMove.y);
-        return nextMove;
+        if (nextMove != null){
+            mygame.makeMove(playerOne, nextMove.x,nextMove.y);
+            return nextMove;
+        } else {
+            return null;
+        }
     }
 
     private OthelloLogic cloneBoard(OthelloLogic mygame) {
