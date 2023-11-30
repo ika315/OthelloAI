@@ -21,11 +21,12 @@ import de.lmu.bio.ifi.OthelloLogic;
 import javafx.scene.control.Button;
 import szte.mi.Move;
 
+import java.util.List;
 import java.util.Random;
 
 
 public class OthelloGUI extends Application implements EventHandler<ActionEvent> {
-    private OthelloLogic mygame;
+    private OthelloLogic GUIgame;
     private static final int size = 8;
     private static final int buttonSize = 60;
     private Label statusLabel;
@@ -37,18 +38,16 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
     AI testingAI = new AI();
 
-
+    Move nextAIMove;
 
 
     @Override
     public void start(Stage stage) throws Exception {
 
-        mygame = new OthelloLogic();
-        randomKI.setGameState(mygame);
+        GUIgame = new OthelloLogic();
+        randomKI.setGameState(GUIgame);
 
-        testingAI.setGameState(mygame);
-        testingAI.init(1,0,new Random());
-
+        testingAI.init(1, 0, new Random());
 
 
         stage.setTitle("Irem's Othello GUI");
@@ -61,7 +60,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
         Label othelloTitle = new Label("Othello");
         othelloTitle.setFont(Font.font("Algerian", 45));
 
-        statusLabel = new Label("Status: " + mygame.status);
+        statusLabel = new Label("Status: " + GUIgame.status);
         whosTurn = new Label("It's Player One's turn.");
 
         topHBox.getChildren().add(othelloTitle);
@@ -84,13 +83,13 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
                 buttons[r][c] = button;
 
                 if ((r == 3 && c == 4) || (r == 4 && c == 3)) {
-                    if (mygame.gameBoard[3][4] == OthelloLogic.X || mygame.gameBoard[4][3] == OthelloLogic.X) {
+                    if (GUIgame.gameBoard[3][4] == OthelloLogic.X || GUIgame.gameBoard[4][3] == OthelloLogic.X) {
                         button.drawBlack();
                     }
                 }
 
                 if ((r == 3 && c == 3) || (r == 4) && (c == 4)) {
-                    if (mygame.gameBoard[3][3] == OthelloLogic.O || mygame.gameBoard[4][4] == OthelloLogic.O) {
+                    if (GUIgame.gameBoard[3][3] == OthelloLogic.O || GUIgame.gameBoard[4][4] == OthelloLogic.O) {
                         button.drawWhite();
                     }
                 }
@@ -108,15 +107,15 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
     @Override
     public void handle(ActionEvent actionEvent) {
-        int currentPlayer = mygame.playerOneIsPlaying ? OthelloLogic.X : OthelloLogic.O;
+        int currentPlayer = GUIgame.playerOneIsPlaying ? OthelloLogic.X : OthelloLogic.O;
 
-        if (mygame.status == GameStatus.RUNNING) {
-                if (actionEvent.getSource() instanceof OthelloButton) {
-                    OthelloButton clickedButton = (OthelloButton) actionEvent.getSource();
-                    prevMove = new Move(clickedButton.c, clickedButton.r);
-                    clickedButton.clicked(mygame.playerOneIsPlaying ? OthelloLogic.X : OthelloLogic.O);
-                }
+        if (GUIgame.status == GameStatus.RUNNING) {
+            if (actionEvent.getSource() instanceof OthelloButton) {
+                OthelloButton clickedButton = (OthelloButton) actionEvent.getSource();
+                prevMove = new Move(clickedButton.c, clickedButton.r);
+                clickedButton.clicked(GUIgame.playerOneIsPlaying ? OthelloLogic.X : OthelloLogic.O);
             }
+        }
     }
 
 
@@ -134,21 +133,26 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
         public void clicked(int player) {
             System.out.println("Game before move:");
-            System.out.println(mygame);
+            System.out.println(GUIgame);
 
             if (player == OthelloLogic.X) {
-                if (mygame.makeMove(true, c, r) == true) {
+                if (GUIgame.makeMove(true, c, r) == true) {
                     System.out.println("Game after human move:");
-                    System.out.println(mygame);
-                    testingAI.nextMove(prevMove,0,0);
+                    System.out.println(GUIgame);
+                    nextAIMove = testingAI.nextMove(prevMove, 0, 0);
+
+                    GUIgame.makeMove(false, nextAIMove.x, nextAIMove.y);
+
                     paintFlippedButtons();
+
+                    GUIgame.printPossibleMoves(GUIgame.getPossibleMoves(true));
                 }
             }
 
 
-            whosTurn.setText("It's " + (mygame.playerOneIsPlaying ? "Player One's" : "Player Two's") + " turn.");
+            whosTurn.setText("It's " + (GUIgame.playerOneIsPlaying ? "Player One's" : "Player Two's") + " turn.");
 
-            statusLabel.setText("Status: " + mygame.status);
+            statusLabel.setText("Status: " + GUIgame.status);
             this.setOnAction(null);
 
 
@@ -157,21 +161,21 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
         private void paintFlippedButtons() {
 
-                for (int i = 0; i < size; i++) {
-                    for (int j = 0; j < size; j++) {
-                        if (mygame.getGameBoard()[i][j] == OthelloLogic.X) {
-                            //System.out.println("Button to be painted black: i coordinate: " + i + "j: " + j);
-                            buttons[i][j].drawBlack();
-                        }
-                        if (mygame.getGameBoard()[i][j] == OthelloLogic.O) {
-                            //System.out.println("Button to be painted white: i coordinate: " + i + "j: " + j);
-                            buttons[i][j].drawWhite();
-                        }
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (GUIgame.getGameBoard()[i][j] == OthelloLogic.X) {
+                        //System.out.println("Button to be painted black: i coordinate: " + i + "j: " + j);
+                        buttons[i][j].drawBlack();
+                    }
+                    if (GUIgame.getGameBoard()[i][j] == OthelloLogic.O) {
+                        //System.out.println("Button to be painted white: i coordinate: " + i + "j: " + j);
+                        buttons[i][j].drawWhite();
+                    }
                 }
             }
 
-            System.out.println("Game after human AND ai played -> updated board (should be consistent with GUI:");
-            System.out.println(mygame);
+            System.out.println("Game after AI played -> updated board (should be consistent with GUI:");
+            System.out.println(GUIgame);
 
         }
 
@@ -203,5 +207,6 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
     public static void main(String[] args) {
         launch(args);
     }
-}
 
+
+}

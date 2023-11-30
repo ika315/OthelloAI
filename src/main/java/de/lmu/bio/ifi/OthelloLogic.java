@@ -66,11 +66,11 @@ public class OthelloLogic implements Game {
 
         //array where all the possible move directions are saved
         //-1 left/up +1 right/down
-        Move[] directions = new Move[] {new Move(-1,-1), new Move(-1,0), new Move(-1,1), new Move(0,-1), new Move(0,1), new Move(1,-1), new Move(1,0), new Move(1,1)};
+        Move[] directions = new Move[]{new Move(-1, -1), new Move(-1, 0), new Move(-1, 1), new Move(0, -1), new Move(0, 1), new Move(1, -1), new Move(1, 0), new Move(1, 1)};
 
         //is the move even inside the board?
         //prevent mixup/mistakes when its not playerOne's turn bc eg. no possible moves left
-        if (checkValidMove(x,y) == false || playerOne != playerOneIsPlaying) {
+        if (checkValidMove(x, y) == false || playerOne != playerOneIsPlaying) {
             return false;
         }
 
@@ -80,9 +80,9 @@ public class OthelloLogic implements Game {
 
         //move around current move by using our directions to look at all 8 directions (left, right, etc)
         for (Move m : directions) {
-            checkNeighborInBoard(x,y,m);
+            checkNeighborInBoard(x, y, m);
             //check whether neighbour is within bounds
-            if (checkNeighborInBoard(x,y,m) == true) {
+            if (checkNeighborInBoard(x, y, m) == true) {
                 neighbour = gameBoard[y + m.y][x + m.x];
                 //if neighbour is opponent, we want to explore that direction more
                 //if not opponent, we dont really care bc we cant flip
@@ -95,8 +95,8 @@ public class OthelloLogic implements Game {
         validMove = false;
 
         //for every neighbour we need to flip the pieces
-        for (Move s : surrounding){
-            if(checkFlip(x,y,currentColour,s) == true){
+        for (Move s : surrounding) {
+            if (checkFlip(x, y, currentColour, s) == true) {
                 validMove = true;
             }
         }
@@ -104,7 +104,7 @@ public class OthelloLogic implements Game {
         //if it was over all a valid move, we set the move on the game board
         //we also keep track of the number of moves in case of a draw
         //and keep track of whose turn it is in case of no possible moves
-        if (validMove == true){
+        if (validMove == true) {
             int player = EMPTY;
             if (playerOne == true) {
                 player = X;
@@ -119,15 +119,20 @@ public class OthelloLogic implements Game {
 
             }
             playerOneIsPlaying = !playerOneIsPlaying;
+            List<Move> possible = getPossibleMoves(!playerOne);
+            if (possible.isEmpty()){
+                playerOneIsPlaying = !playerOneIsPlaying;
+            }
             return true;
         }
 
 
-        //if we have no opponent piece surrounding our coordinates,
+    //if we have no opponent piece surrounding our coordinates,
         //we cant make a move (rules)
         if (surrounding.isEmpty()){
             return false;
         }
+
         return false;
     }
 
@@ -214,7 +219,7 @@ public class OthelloLogic implements Game {
         //now check for game board possible moves
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (makeMove(playerOne, i, j)) {
+                if (pretendMove(playerOne, i, j)) {
                     playerOneIsPlaying = !playerOneIsPlaying;
                     possibleMoves.add(new Move(i, j));
                 }
@@ -228,6 +233,78 @@ public class OthelloLogic implements Game {
 
         return possibleMoves;
     }
+
+    private boolean pretendMove(boolean playerOne, int x, int y) {
+        int currentColour = playerOne ? 1 : 2;
+        int otherColour = playerOne ? 2 : 1;
+
+        Move[] directions = new Move[]{new Move(-1, -1), new Move(-1, 0), new Move(-1, 1), new Move(0, -1), new Move(0, 1), new Move(1, -1), new Move(1, 0), new Move(1, 1)};
+
+        //is the move even inside the board?
+        //prevent mixup/mistakes when its not playerOne's turn bc eg. no possible moves left
+        if (checkValidMove(x, y) == false || playerOne != playerOneIsPlaying) {
+            return false;
+        }
+
+        //array list (bc flexible) to look at neighbours of current move
+        //if there are no neighbours (which we will check later), its simply not a valid move
+        ArrayList<Move> surrounding = new ArrayList<>();
+
+        //move around current move by using our directions to look at all 8 directions (left, right, etc)
+        for (Move m : directions) {
+            checkNeighborInBoard(x, y, m);
+            //check whether neighbour is within bounds
+            if (checkNeighborInBoard(x, y, m) == true) {
+                neighbour = gameBoard[y + m.y][x + m.x];
+                //if neighbour is opponent, we want to explore that direction more
+                //if not opponent, we dont really care bc we cant flip
+                if (neighbour == otherColour) {
+                    surrounding.add(m);
+                }
+            }
+        }
+
+        validMove = false;
+
+        //for every neighbour we need to flip the pieces
+        for (Move s : surrounding) {
+            if (checkFlip(x, y, currentColour, s) == true) {
+                validMove = true;
+            }
+        }
+
+        //if it was over all a valid move, we set the move on the game board
+        //we also keep track of the number of moves in case of a draw
+        //and keep track of whose turn it is in case of no possible moves
+        if (validMove == true) {
+            int player = EMPTY;
+            if (playerOne == true) {
+                player = X;
+                gameBoard[y][x] = player;
+                numberMoves++;
+
+
+            } else {
+                player = O;
+                gameBoard[y][x] = player;
+                numberMoves++;
+
+            }
+            playerOneIsPlaying = !playerOneIsPlaying;
+            return true;
+        }
+
+
+        //if we have no opponent piece surrounding our coordinates,
+        //we cant make a move (rules)
+        if (surrounding.isEmpty()){
+            return false;
+        }
+
+        return false;
+
+    }
+
 
     public void printPossibleMoves(List<Move> possibleMoves) {
         System.out.println("Possible Moves for Player " + (playerOneIsPlaying ? "1" : "2") + ":");
@@ -252,22 +329,22 @@ public class OthelloLogic implements Game {
             return GameStatus.DRAW;
         }
         //if the players do have possible moves, the game is still running
-            else if (getPossibleMoves(playerOneIsPlaying).isEmpty() == false){
-                return GameStatus.RUNNING;
+        if (getPossibleMoves(playerOneIsPlaying).isEmpty() == false){
+            return GameStatus.RUNNING;
 
         //else count the pieces on the board to determine winner
-            } else {
-                for (int i = 0; i < size; i++) {
-                    for (int j = 0; j < size; j++) {
-                        if (gameBoard[i][j] == X) {
+        } else {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (gameBoard[i][j] == X) {
                             counterX++;
-                        }
-                        if (gameBoard[i][j] == O) {
+                    }
+                    if (gameBoard[i][j] == O) {
                             counterO++;
-                        }
                     }
                 }
             }
+        }
 
             if (counterX > counterO) {
                 return GameStatus.PLAYER_1_WON;

@@ -8,9 +8,6 @@ public class RunnerOthello {
 
         OthelloLogic test = new OthelloLogic();
 
-        RandomKI random = new RandomKI();
-
-        random.setGameState(test);
 
         //manuelle überprüfung
 
@@ -21,10 +18,8 @@ public class RunnerOthello {
 
         test.printPossibleMoves(test.getPossibleMoves(false));
 
-        Move move = random.nextMove(null, 0,0);
+        test.makeMove(false, 5,3);
 
-
-        test.makeMove(false, move.x, move.y);
 
 
         /*

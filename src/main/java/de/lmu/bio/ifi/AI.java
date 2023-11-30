@@ -23,7 +23,6 @@ public class AI implements Player {
      */
 
     Random rnd;
-    int order;
 
     long t;
     boolean playerOne;
@@ -34,12 +33,16 @@ public class AI implements Player {
         playerOne = (order == 0);
         this.t = t;
         this.rnd = rnd;
-
+        mygame = new OthelloLogic();
     }
+
+    /*
 
     public void setGameState(OthelloLogic game){
         this.mygame = game;
     }
+
+     */
 
     /**
      * Calculates the next move of the player in a two player game.
@@ -54,41 +57,73 @@ public class AI implements Player {
      */
     @Override
     public Move nextMove(Move prevMove, long tOpponent, long t) {
-        Move nextMove = findBestMove(mygame,4);
+        if (prevMove != null){
+            mygame.makeMove(!playerOne, prevMove.x, prevMove.y);
+        }
+
+        Move nextMove = findBestMove(mygame);
         mygame.makeMove(false, nextMove.x,nextMove.y);
         return nextMove;
     }
 
+    private OthelloLogic cloneBoard(OthelloLogic mygame) {
 
-    public Move findBestMove(OthelloLogic mygame, int depth) {
-        Move bestMove = null;
-        int bestScore = Integer.MIN_VALUE;
+        OthelloLogic copyOfGame = new OthelloLogic();
 
-        List<Move> possibleMoves = mygame.getPossibleMoves(false);
-        OthelloLogic copyOfGame = cloneBoard(mygame);
-        HashMap<Move, Integer> scoredMoves = new HashMap<Move, Integer>();
-
-
-        for (Move move : possibleMoves) {
-            copyOfGame.makeMove(false, move.x, move.y);
-
-            int score = miniMax(copyOfGame, depth, true);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = move;
+        for (int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; j++){
+                copyOfGame.gameBoard[i][j] = mygame.gameBoard[i][j];
             }
         }
+        return copyOfGame;
 
-        return bestMove;
     }
 
+        private static final int[][] HEURISTIC_WEIGHTS = {
+                {100, -20, 10, 5, 5, 10, -20, 100},
+                {-20, -50, -2, -2, -2, -2, -50, -20},
+                {10, -2, -1, -1, -1, -1, -2, 10},
+                {5, -2, -1, -1, -1, -1, -2, 5},
+                {5, -2, -1, -1, -1, -1, -2, 5},
+                {10, -2, -1, -1, -1, -1, -2, 10},
+                {-20, -50, -2, -2, -2, -2, -50, -20},
+                {100, -20, 10, 5, 5, 10, -20, 100}
+        };
 
 
+        private Move findBestMove(OthelloLogic mygame) {
+            List<Move> possibleMoves = mygame.getPossibleMoves(playerOne);
+            Move bestMove = null;
+            int bestScore = Integer.MIN_VALUE;
+
+            for (Move move : possibleMoves) {
+                int score = evaluateMove(mygame, move);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = move;
+                }
+            }
+
+            return bestMove;
+        }
+
+        private int evaluateMove(OthelloLogic mygame, Move move) {
+            int score = 0;
+            int[][] gameBoard = mygame.getGameBoard();
+
+            score += HEURISTIC_WEIGHTS[move.y][move.x];
+
+
+            return score;
+        }
+
+/*
 
     /* if ai is maximizing, it means the ai is the current player.
     if the ai is minimizing it means the human player is the current player
 
-     */
+
+
     public int miniMax(OthelloLogic mygame, int depth, boolean isMaximize){
         if (depth == 0){
             return evaluation(mygame);
@@ -96,13 +131,13 @@ public class AI implements Player {
         if (isMaximize) {
             OthelloLogic copyOfGame = cloneBoard(mygame);
             int maxVal = Integer.MIN_VALUE;
-            if (copyOfGame.playerOneIsPlaying = true){
+            if (copyOfGame.playerOneIsPlaying == true){
                 copyOfGame.playerOneIsPlaying = false;
             }
             List<Move> moves = copyOfGame.getPossibleMoves(false);
             for (Move m : moves) {
                 copyOfGame.makeMove(false, m.x, m.y);
-                int v = miniMax(copyOfGame, depth - 1, false);
+                int v = miniMax(copyOfGame, depth-1, false);
                 maxVal = Math.max(maxVal, v);
 
             }
@@ -120,35 +155,23 @@ public class AI implements Player {
         }
     }
 
-    private OthelloLogic cloneBoard(OthelloLogic mygame) {
-
-        OthelloLogic copyOfGame = new OthelloLogic();
-
-        for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 8; j++){
-                copyOfGame.gameBoard[i][j] = mygame.gameBoard[i][j];
-            }
-        }
-        return copyOfGame;
-
-    }
 
     private static final int[][] pieceValues = {
-            { 100,  10,  10,  10,  10,  10,  10, 100},
+            { 100,  15,  10,  10,  10,  10,  15, 100},
 
-            {  10,   1,   1,   1,   1,   1,   1,  10},
+            {  15,   1,   3,   3,   3,   3,   1,  15},
 
-            {  10,   1,   1,   1,   1,   1,   1,  10},
+            {  10,   3,   2,   2,   2,   2,   3,  10},
 
-            {  10,   1,   1,   1,   1,   1,   1,  10},
+            {  10,   3,   1,   1,   1,   2,   3,  10},
 
-            {  10,   1,   1,   1,   1,   1,   1,  10},
+            {  10,   3,   2,   2,   2,   2,   3,  10},
 
-            {  10,   1,   1,   1,   1,   1,   1,  10},
+            {  10,   3,   2,   2,   2,   2,   3,  10},
 
-            {  10,   1,   1,   1,   1,   1,   1,  10},
+            {  15,   1,   2,   2,   2,   2,   3,  15},
 
-            { 100,  10,  10,  10,  10,  10,  10, 100}
+            { 100,  15,  10,  10,  10,  10,  15, 100}
     };
 
 
@@ -170,6 +193,8 @@ public class AI implements Player {
 
         return blackScore - whiteScore; //positive score: black player advantage / negative score: white player advantage
     }
+
+ */
 
 
 
