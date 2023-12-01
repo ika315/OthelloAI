@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 public class AI implements Player {
+    private static final int CORNER_BONUS = 20;
     /**
      * Performs initialization depending on the parameters.
      *
@@ -28,6 +29,11 @@ public class AI implements Player {
     boolean playerOne;
 
     private OthelloLogic mygame;
+
+    int playerNum;
+
+    int oppNum;
+
     @Override
     public void init(int order, long t, Random rnd) {
         playerOne = (order == 0);
@@ -65,10 +71,14 @@ public class AI implements Player {
         if (nextMove != null){
             mygame.makeMove(playerOne, nextMove.x,nextMove.y);
             return nextMove;
+
         } else {
             return null;
         }
+
+
     }
+    /*
 
     private OthelloLogic cloneBoard(OthelloLogic mygame) {
 
@@ -82,16 +92,16 @@ public class AI implements Player {
         return copyOfGame;
 
     }
-
+     */
         private static final int[][] HEURISTIC_WEIGHTS = {
-                {100, -20, 10, 5, 5, 10, -20, 100},
-                {-20, -50, -2, -2, -2, -2, -50, -20},
-                {10, -2, -1, -1, -1, -1, -2, 10},
-                {5, -2, -1, -1, -1, -1, -2, 5},
-                {5, -2, -1, -1, -1, -1, -2, 5},
-                {10, -2, -1, -1, -1, -1, -2, 10},
-                {-20, -50, -2, -2, -2, -2, -50, -20},
-                {100, -20, 10, 5, 5, 10, -20, 100}
+            {100, -20, 10, 5, 5, 10, -20, 100},
+            {-20, -50, -2, -2, -2, -2, -50, -20},
+            {10, -2, -1, -1, -1, -1, -2, 10},
+            {5, -2, -1, -1, -1, -1, -2, 5},
+            {5, -2, -1, -1, -1, -1, -2, 5},
+            {10, -2, -1, -1, -1, -1, -2, 10},
+            {-20, -50, -2, -2, -2, -2, -50, -20},
+            {100, -20, 10, 5, 5, 10, -20, 100}
         };
 
 
@@ -101,25 +111,76 @@ public class AI implements Player {
             int bestScore = Integer.MIN_VALUE;
 
             for (Move move : possibleMoves) {
+                System.out.println("Move: " + "X: "+ move.x + "Y: " + move.y);
                 int score = evaluateMove(mygame, move);
                 if (score > bestScore) {
                     bestScore = score;
                     bestMove = move;
                 }
             }
-
             return bestMove;
         }
 
         private int evaluateMove(OthelloLogic mygame, Move move) {
-            int score = 0;
+            playerNum = playerOne ? 1 : 2;  //1 if AI
+            oppNum = playerOne ? 2 : 1;
+
             int[][] gameBoard = mygame.getGameBoard();
 
-            score += HEURISTIC_WEIGHTS[move.y][move.x];
+            int centralControl = 0;
+            int stability = 0;
+            int position = 0;
+
+            centralControl += countCentralControl(gameBoard, playerNum) - countCentralControl(gameBoard, oppNum);
+
+            System.out.println("Central Control: " + centralControl) ;
+
+            stability += evaluateStability(gameBoard, playerNum) - evaluateStability(gameBoard, oppNum);
+
+            System.out.println("Stability: " + stability);
+
+            position += HEURISTIC_WEIGHTS[move.y][move.x];
+
+            System.out.println("Position: " + position);
 
 
-            return score;
+            System.out.println(centralControl+stability+position);
+            return centralControl + stability + position;
         }
+
+    private int evaluateStability(int[][] gameBoard, int playerNum) {
+            int stability = 0;
+            for (int i = 0; i < 8; i++){
+                for (int j = 0; j < 8; j++){
+                    if (gameBoard[i][j] == playerNum){
+                        int stableNeighbors = countStableNeighbors(gameBoard, i, j, playerNum);
+                        stability += stableNeighbors;
+                    }
+                }
+            }
+            return stability;
+    }
+
+    private int countStableNeighbors(int[][] gameBoard, int i, int j, int playerNum) {
+            if (i == 0 || i == 7 || j == 0 || j == 7){
+                return 10;
+            }
+            return 1;
+    }
+
+
+    private int countCentralControl(int[][] gameBoard, int playerNum) {
+            int centralControl = 0;
+            for (int i = 2; i < 6; i++){
+                for (int j = 2; j < 6; j++){
+                    if (gameBoard[i][j] == playerNum){
+                        centralControl++;
+                    }
+                }
+            }
+            return centralControl;
+    }
+
 
 /*
 

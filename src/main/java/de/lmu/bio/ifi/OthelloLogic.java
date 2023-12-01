@@ -24,6 +24,10 @@ public class OthelloLogic implements Game {
     int neighbour;
     public boolean playerOneIsPlaying = true;
 
+    int sizeOfPossibleMoves1;
+
+    int sizeOfPossibleMoves2;
+
     //constructor that initializes an othello game board
     public OthelloLogic() {
         gameBoard = new int[size][size];

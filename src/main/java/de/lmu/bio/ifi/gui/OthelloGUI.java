@@ -145,7 +145,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
                     paintFlippedButtons();
 
-                    GUIgame.printPossibleMoves(GUIgame.getPossibleMoves(true));
+                    //GUIgame.printPossibleMoves(GUIgame.getPossibleMoves(true));
                 }
             }
 
