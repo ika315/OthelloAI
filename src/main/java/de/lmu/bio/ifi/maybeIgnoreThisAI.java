@@ -1,15 +1,13 @@
 package de.lmu.bio.ifi;
 
-import com.sun.nio.sctp.SctpSocketOption;
 import szte.mi.Move;
 import szte.mi.Player;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class AI implements Player {
+public class maybeIgnoreThisAI implements Player {
     private static final int CORNER_BONUS = 20;
     /**
      * Performs initialization depending on the parameters.

@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import szte.mi.Move;
 
-import java.util.List;
 import java.util.Random;
 
 
@@ -35,7 +34,7 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
 
     //AI testingAI = new AI();
 
-    AI2 testAI2 = new AI2();
+    MiniMaxAI testAI2 = new MiniMaxAI();
 
     Move nextAIMove;
 
