@@ -1,8 +1,6 @@
 package de.lmu.bio.ifi.gui;
 
-import de.lmu.bio.ifi.GameStatus;
-import de.lmu.bio.ifi.RandomKI;
-import de.lmu.bio.ifi.AI;
+import de.lmu.bio.ifi.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import de.lmu.bio.ifi.OthelloLogic;
 import javafx.scene.control.Button;
 import szte.mi.Move;
 
@@ -36,7 +33,9 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
     GridPane board;
     RandomKI randomKI = new RandomKI();
 
-    AI testingAI = new AI();
+    //AI testingAI = new AI();
+
+    AI2 testAI2 = new AI2();
 
     Move nextAIMove;
 
@@ -47,7 +46,8 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
         GUIgame = new OthelloLogic();
         randomKI.setGameState(GUIgame);
 
-        testingAI.init(1, 0, new Random());
+        testAI2.init(1,0,new Random());
+        //testingAI.init(1, 0, new Random());
 
 
         stage.setTitle("Irem's Othello GUI");
@@ -139,7 +139,8 @@ public class OthelloGUI extends Application implements EventHandler<ActionEvent>
                 if (GUIgame.makeMove(true, c, r) == true) {
                     System.out.println("Game after human move:");
                     System.out.println(GUIgame);
-                    nextAIMove = testingAI.nextMove(prevMove, 0, 0);
+                    //nextAIMove = testingAI.nextMove(prevMove, 0, 0);
+                    nextAIMove = testAI2.nextMove(prevMove,0,0);
 
                     GUIgame.makeMove(false, nextAIMove.x, nextAIMove.y);
 
